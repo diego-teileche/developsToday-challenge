@@ -1,4 +1,9 @@
 "use client"
+import CountryLink from "@/components/CountryLink"
+import Header from "@/components/Header"
+import MainTitle from "@/components/MainTitle"
+import PopulationChart from "@/components/PopulationChart"
+import SecondaryTitle from "@/components/SecondaryTitle"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -10,15 +15,13 @@ interface PopulationData {
 
 interface BorderCountry {
 	commonName: string
+	countryCodeRef: string
 }
 interface CountryDetails {
 	commonName: string
-	officialName: string
-	countryCode: string
-	region: string
-	borderCountries: { borders: BorderCountry[] }
+	borders: BorderCountry[]
 	populationData: PopulationData[]
-	flagData: string | null
+	flagUrl: string | null
 }
 
 export default function CountryInfo() {
@@ -35,7 +38,6 @@ export default function CountryInfo() {
 				const response = await fetch(
 					`http://localhost:4000/country-details/${countryCode}`
 				)
-				console.log("Response: ", response)
 
 				if (!response.ok) throw new Error("Failed to fetch country details")
 
@@ -62,52 +64,65 @@ export default function CountryInfo() {
 	}
 
 	if (!countryDetails) {
-		return <div>Loading...</div>
+		return (
+			<section className="h-[100vh]">
+				<div className="container">
+					<div className="flex justify-center items-center">
+						<p>Loading...</p>
+					</div>
+				</div>
+			</section>
+		)
 	}
-	console.log("country details: ", countryDetails)
-	const borderCountries = countryDetails.borderCountries.borders
+	const borderCountries = countryDetails.borders
 
 	return (
-		<div className="flex items-center flex-col gap-5 py-10">
-			<h1>{countryCode} Details</h1>
-			<div>
-				<h2>Border Countries</h2>
-				<ul>
-					{Array.isArray(borderCountries) && borderCountries.length > 0 ? (
-						borderCountries.map((borderCountry) => (
-							<li key={borderCountry.commonName}>{borderCountry.commonName}</li>
-						))
-					) : (
-						<li>No border countries available</li>
-					)}
-				</ul>
+		<section className="pb-14">
+			<Header />
+			<div className="container">
+				<div className="flex items-center flex-col gap-5">
+					<div className="flex items-center gap-5 justify-center">
+						<MainTitle title={countryDetails.commonName} />
+
+						<div className="mt-3">
+							{countryDetails.flagUrl ? (
+								<Image
+									src={countryDetails.flagUrl}
+									alt={`${countryDetails.commonName} Flag`}
+									width={100}
+									height={60}
+								/>
+							) : (
+								<p>No flag available</p>
+							)}
+						</div>
+					</div>
+
+					<div className="flex flex-col items-center py-10 gap-10">
+						<SecondaryTitle title="Border Countries" />
+
+						<ul className="flex flex-wrap max-w-[300px] md:max-w-[500px] lg:max-w-[700px] justify-center gap-5">
+							{Array.isArray(borderCountries) && borderCountries.length > 0 ? (
+								borderCountries.map((borderCountry) => (
+									<CountryLink
+										key={borderCountry.commonName}
+										href={borderCountry.countryCodeRef}
+										countryName={borderCountry.commonName}
+									/>
+								))
+							) : (
+								<li>No border countries available</li>
+							)}
+						</ul>
+					</div>
+
+					<div className="flex flex-col items-center gap-14 py-10">
+						<SecondaryTitle title="Population Data" />
+
+						<PopulationChart data={countryDetails.populationData} />
+					</div>
+				</div>
 			</div>
-			<div>
-				<h2>Population Data</h2>
-				<ul>
-					{Array.isArray(countryDetails.populationData) &&
-					countryDetails.populationData.length > 0 ? (
-						countryDetails.populationData.map((population, index) => (
-							<li key={index}>{`${population.year}: ${population.value}`}</li>
-						))
-					) : (
-						<li>No population data available</li>
-					)}
-				</ul>
-			</div>
-			<div>
-				<h2>Flag</h2>
-				{countryDetails.flagData ? (
-					<Image
-						src={countryDetails.flagData}
-						alt={`${countryDetails.commonName} Flag`}
-						width={300}
-						height={200}
-					/>
-				) : (
-					<p>No flag available</p>
-				)}
-			</div>
-		</div>
+		</section>
 	)
 }

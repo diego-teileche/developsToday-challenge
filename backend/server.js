@@ -30,6 +30,22 @@ app.get("/country-details/:countryCode", async (req, res) => {
 	const countryCode = req.params.countryCode
 
 	try {
+		const availableResponse = await fetch(availableCountries)
+
+		if (!availableResponse.ok)
+			throw new Error("Error getting available countries.")
+
+		const availableData = await availableResponse.json()
+
+		const countryInfo = availableData.find(
+			(country) => country.countryCode === countryCode
+		)
+
+		if (!countryInfo)
+			throw new Error("Country not found in available countries.")
+
+		const countryName = countryInfo.name
+
 		const [borderResponse, populationResponse, flagResponse] =
 			await Promise.all([
 				fetch(`${bordersCountries}/${countryCode}`),
@@ -44,16 +60,25 @@ app.get("/country-details/:countryCode", async (req, res) => {
 		const populationData = await populationResponse.json()
 		const flagData = await flagResponse.json()
 
+		let borderCountriesArray
+		if (borderCountries && Array.isArray(borderCountries.borders)) {
+			borderCountriesArray = borderCountries.borders
+		} else {
+			throw new Error("Unexpected structure for borderCountries")
+		}
+
 		const countryPopulationData = populationData.data.find(
-			(country) => country.code === countryCode
+			(country) => country.country === countryName
 		)
 		const countryFlagData = flagData.data.find(
 			(country) => country.iso2 === countryCode
 		)
 
 		const countryDetails = {
-			borders: borderCountries.map((country) => ({
+			commonName: countryName,
+			borders: borderCountriesArray.map((country) => ({
 				commonName: country.commonName,
+				countryCodeRef: country.countryCode,
 			})),
 			populationData: countryPopulationData
 				? countryPopulationData.populationCounts.map((population) => ({
@@ -66,6 +91,7 @@ app.get("/country-details/:countryCode", async (req, res) => {
 
 		res.json(countryDetails)
 	} catch (error) {
+		console.error("Error fetching country info:", error)
 		res.status(500).json({ error: "Error fetching countryCode info." })
 	}
 })

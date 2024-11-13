@@ -4,7 +4,7 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
-		"dev": "set PORT=4000 && node server.js"
+		"dev": "set PORT=4000 && node --watch server.js"
 	},
 	"keywords": [],
 	"author": "Diego Teileche",

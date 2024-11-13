@@ -1,5 +1,6 @@
 "use client"
-import Link from "next/link"
+import CountryLink from "@/components/CountryLink"
+import MainTitle from "@/components/MainTitle"
 import { useEffect, useState } from "react"
 
 interface CountryProps {
@@ -37,15 +38,24 @@ export default function Home() {
 	}
 
 	return (
-		<main className="flex flex-col items-center py-10 gap-5">
-			<h1 className="text-4xl font-bold pb-5">List of Countries</h1>
-			<ul className="grid grid-cols-4 gap-5">
-				{countries.map((country) => (
-					<li key={country.countryCode}>
-						<Link href={`/country/${country.countryCode}`}>{country.name}</Link>
-					</li>
-				))}
-			</ul>
+		<main className="flex justify-center py-10">
+			<section>
+				<div className="container">
+					<div className="flex flex-col items-center gap-10">
+						<MainTitle title="List of Countries" />
+
+						<ul className="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-4 gap-5">
+							{countries.map((country) => (
+								<CountryLink
+									key={country.countryCode}
+									href={country.countryCode}
+									countryName={country.name}
+								/>
+							))}
+						</ul>
+					</div>
+				</div>
+			</section>
 		</main>
 	)
 }
