@@ -1,18 +1,19 @@
 {
-	"name": "backend",
-	"version": "1.0.0",
-	"main": "index.js",
-	"type": "module",
-	"scripts": {
-		"dev": "set PORT=4000 && node --watch server.js"
-	},
-	"keywords": [],
-	"author": "Diego Teileche",
-	"license": "ISC",
-	"description": "",
-	"dependencies": {
-		"cors": "^2.8.5",
-		"dotenv": "^16.4.5",
-		"express": "^4.21.1"
-	}
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "set PORT=4000 && node --watch server.js",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "Diego Teileche",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "prettier": "^3.3.3"
+  }
 }
