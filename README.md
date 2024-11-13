@@ -31,7 +31,7 @@ Install the necessary dependencies for both the frontend and backend.
 #### Backend
 
 ```shell
-  cd frontend 
+  cd backend
   npm install
 ```
 
