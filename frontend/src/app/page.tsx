@@ -46,11 +46,12 @@ export default function Home() {
 
 						<ul className="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-4 gap-5">
 							{countries.map((country) => (
-								<CountryLink
-									key={country.countryCode}
-									href={country.countryCode}
-									countryName={country.name}
-								/>
+								<li key={country.countryCode}>
+									<CountryLink
+										href={country.countryCode}
+										countryName={country.name}
+									/>
+								</li>
 							))}
 						</ul>
 					</div>

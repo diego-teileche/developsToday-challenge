@@ -65,12 +65,8 @@ export default function CountryInfo() {
 
 	if (!countryDetails) {
 		return (
-			<section className="h-[100vh]">
-				<div className="container">
-					<div className="flex justify-center items-center">
-						<p>Loading...</p>
-					</div>
-				</div>
+			<section className="h-[100vh] flex justify-center items-center">
+				<p>Loading...</p>
 			</section>
 		)
 	}
@@ -104,11 +100,12 @@ export default function CountryInfo() {
 						<ul className="flex flex-wrap max-w-[300px] md:max-w-[500px] lg:max-w-[700px] justify-center gap-5">
 							{Array.isArray(borderCountries) && borderCountries.length > 0 ? (
 								borderCountries.map((borderCountry) => (
-									<CountryLink
-										key={borderCountry.commonName}
-										href={borderCountry.countryCodeRef}
-										countryName={borderCountry.commonName}
-									/>
+									<li key={borderCountry.commonName}>
+										<CountryLink
+											href={borderCountry.countryCodeRef}
+											countryName={borderCountry.commonName}
+										/>
+									</li>
 								))
 							) : (
 								<li>No border countries available</li>
